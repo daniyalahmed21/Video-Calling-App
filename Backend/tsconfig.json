@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
+  
   "compilerOptions": {
     /* Language and Environment */
     "target": "ES2021",                     /* Output JavaScript version */
