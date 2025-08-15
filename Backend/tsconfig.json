@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2021",                     /* Output JavaScript version */
+    "lib": ["ES2021"],                       /* Standard library to include */
+    "module": "commonjs",                    /* Module system for Node.js backend */
+    "moduleResolution": "node",              /* Resolve modules like Node.js */
+    "esModuleInterop": true,                 /* Allow default imports from CommonJS modules */
+    "forceConsistentCasingInFileNames": true,/* Case sensitivity in imports */
+    "strict": true,                          /* Enable all strict type checks */
+    "skipLibCheck": true,                    /* Skip type checking .d.ts files */
+
+    /* Paths & Output */
+    "outDir": "./dist",                      /* Output compiled files */
+    "rootDir": "./src",                      /* Root TypeScript source folder */
+
+    /* Type Support */
+    "resolveJsonModule": true,               /* Allow importing .json files */
+    "types": ["node"],                       /* Include Node.js types */
+    "noImplicitAny": true,                   /* Warn if 'any' type is used */
+
+    /* For ESLint type-aware rules */
+    "noEmitOnError": true                    /* Stop build if there are TS errors */
+  },
+  "include": ["src"],                        /* Include source folder */
+  "exclude": ["node_modules", "dist"]        /* Exclude folders from compilation */
+}
