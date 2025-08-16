@@ -1,14 +1,30 @@
-import { createContext } from "react";
-import io from "socket.io-client";
+import React, { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { io, Socket } from "socket.io-client";
 
 const WS_SERVER = "http://localhost:3000";
-const socket = io(WS_SERVER);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SocketContext = createContext<any | null>(null);
+export const SocketContext = createContext<Socket | null>(null);
+
 export function SocketProvider({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
+  const [socket] = useState(() => io(WS_SERVER));
+
+  useEffect(() => {
+    const handleRoomCreated = ({ roomId }: { roomId: string }) => {
+      console.log(`Room created with ID: ${roomId}`);
+      navigate(`/room/${roomId}`);
+    };
+
+    socket.on("room-created", handleRoomCreated);
+
+    return () => {
+      socket.off("room-created", handleRoomCreated);
+    };
+  }, [navigate, socket]);
+
   return (
-    <SocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={socket}>
       {children}
     </SocketContext.Provider>
   );
