@@ -9,8 +9,8 @@ const RoomHandler = (socket:Socket ) =>{
         console.log(`Room created with id ${roomId}`)
     }
 
-    const joinRoom = ({roomId}:{roomId:string}) => {
-        console.log("Room joined",roomId)
+    const joinRoom = ({roomId,userId}:{roomId:string,userId:string}) => {
+        console.log(`user joined with roomId ${roomId} and userId ${userId}`)
     }
 
     socket.on("create-room",createRoom)

@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { SocketContext } from "../context/SocketContext";
 
 const CreateRoom = () => {
-  const socket = useContext(SocketContext); 
+  const {socket} = useContext(SocketContext); 
 
   const initRoom = () => {
     if (socket) {
