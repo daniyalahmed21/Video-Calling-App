@@ -1,3 +1,4 @@
+// src/hooks/useSocket.ts
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { io, Socket } from "socket.io-client";
@@ -14,8 +15,15 @@ export const useSocket = () => {
 
   useEffect(() => {
     // Initialize PeerJS only once
-    const peerInstance = new Peer(userId);
-    setPeer(peerInstance);
+    const peerInstance = new Peer(userId, {
+        host: '/', // Use your own PeerServer if you have one
+        port: 9000 // Default PeerServer port
+    });
+
+    peerInstance.on('open', (id) => {
+        console.log("Peer ID:", id);
+        setPeer(peerInstance);
+    });
 
     const handleRoomCreated = ({ roomId }: { roomId: string }) => {
       console.log(`Room created with ID: ${roomId}`);
@@ -26,7 +34,6 @@ export const useSocket = () => {
 
     return () => {
       socket.off("room-created", handleRoomCreated);
-      peerInstance.destroy(); // Clean up peer connection
     };
   }, [navigate, socket, userId]);
 

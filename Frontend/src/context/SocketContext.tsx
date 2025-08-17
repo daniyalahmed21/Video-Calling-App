@@ -1,8 +1,10 @@
-import  { createContext, type ReactNode } from "react";
+// src/context/SocketContext.ts
+import React, { createContext, ReactNode } from "react";
 import { Socket } from "socket.io-client";
 import Peer from "peerjs";
 import { useSocket } from "../hooks/useSocket";
 
+// Define the shape of the context value
 interface ISocketContext {
   socket: Socket | null;
   peer: Peer | null;
