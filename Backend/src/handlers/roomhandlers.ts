@@ -26,6 +26,7 @@ const RoomHandler = (socket: Socket) => {
     if (!rooms[roomId].includes(userId)) {
       rooms[roomId].push(userId);
       socket.join(roomId);
+      socket.emit("get-users",rooms)
       console.log(`User ${userId} joined room ${roomId}`);
       socket.emit("room-joined", { roomId, userId });
     }
