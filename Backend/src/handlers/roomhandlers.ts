@@ -1,20 +1,38 @@
-import { Socket } from "socket.io"
-import { v4 as uuidv4 } from 'uuid';
+import { Socket } from "socket.io";
+import { v4 as uuidv4 } from "uuid";
+import IRoomParams from "../interfaces/iRoomParams";
 
-const RoomHandler = (socket:Socket ) =>{
-    const createRoom = () =>{
-        const roomId = uuidv4(); 
-        socket.join(roomId)
-        socket.emit('room-created',{roomId})
-        console.log(`Room created with id ${roomId}`)
+// Keep rooms as a shared in-memory map
+const rooms: Record<string, string[]> = {};
+
+const RoomHandler = (socket: Socket) => {
+
+  // Create a new room
+  const handleCreateRoom = () => {
+    const roomId = uuidv4();
+    rooms[roomId] = [];             
+    socket.join(roomId);            
+    socket.emit("room-created", { roomId });
+    console.log(`Room created with id ${roomId}`);
+  };
+
+  // Join an existing room
+  const handleJoinRoom = ({ roomId, userId }: IRoomParams) => {
+    if (!rooms[roomId]) {
+      console.warn(`Room ${roomId} does not exist`);
+      return;
     }
 
-    const joinRoom = ({roomId,userId}:{roomId:string,userId:string}) => {
-        console.log(`user joined with roomId ${roomId} and userId ${userId}`)
+    if (!rooms[roomId].includes(userId)) {
+      rooms[roomId].push(userId);
+      socket.join(roomId);
+      console.log(`User ${userId} joined room ${roomId}`);
+      socket.emit("room-joined", { roomId, userId });
     }
+  };
 
-    socket.on("create-room",createRoom)
-    socket.on("join-room",joinRoom)
-}
+  socket.on("create-room", handleCreateRoom);
+  socket.on("join-room", handleJoinRoom);
+};
 
-export default RoomHandler
+export default RoomHandler;

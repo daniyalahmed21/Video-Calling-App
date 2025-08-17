@@ -4,15 +4,16 @@ import { SocketContext } from "../context/SocketContext";
 
 const Room = () => {
   const { id } = useParams();
-  const { socket, user } = useContext(SocketContext) as {
-    socket: any;
-    user: { _id: string; name?: string };
-  };
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error("Room must be used within a SocketProvider");
+  }
+  const { socket, userId } = context;
 
   useEffect(() => {
-    if (!socket || !id || !user) return;
+    if (!socket || !id || !userId) return;
 
-    socket.emit("join-room", { roomId: id, userId: user._id });
+    socket.emit("join-room", { roomId: id, userId: userId });
 
     const handleRoomJoined = (data: { roomId: string; userId: string }) => {
       console.log(
@@ -25,7 +26,7 @@ const Room = () => {
     return () => {
       socket.off("room-joined", handleRoomJoined);
     };
-  }, [socket, id, user]);
+  }, [socket, id, userId]);
 
   return <div>Room {id}</div>;
 };

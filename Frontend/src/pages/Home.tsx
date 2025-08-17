@@ -1,10 +1,10 @@
-import React from 'react'
-import CreateRoom from '../components/createRoom'
+import { useCreateRoom } from '../hooks/useCreateRoom';
 
 const Home = () => {
+  const { createRoom } = useCreateRoom();
   return (
-    <CreateRoom/>
-  )
-}
+    <button onClick={createRoom}>Create a new room</button>
+  );
+};
 
-export default Home
+export default Home;

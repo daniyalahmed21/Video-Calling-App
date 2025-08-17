@@ -1,39 +1,21 @@
+import  { createContext, type ReactNode } from "react";
+import { Socket } from "socket.io-client";
 import Peer from "peerjs";
-import React, { createContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { io, Socket } from "socket.io-client";
-import { v4 as uuidv4 } from "uuid";
+import { useSocket } from "../hooks/useSocket";
 
-const WS_SERVER = "http://localhost:3000";
+interface ISocketContext {
+  socket: Socket | null;
+  peer: Peer | null;
+  userId: string;
+}
 
-export const SocketContext = createContext<any | null>(null);
+export const SocketContext = createContext<ISocketContext | null>(null);
 
-export function SocketProvider({ children }: { children: React.ReactNode }) {
-  const navigate = useNavigate();
-  const [socket] = useState(() => io(WS_SERVER));
-  const [user, setUser] = useState<Peer>();
-
-  useEffect(() => {
-    const userId = uuidv4();
-    const peerId = new Peer(userId);
-
-    setUser(peerId);
-    console.log("userId",user)
-
-    const handleRoomCreated = ({ roomId }: { roomId: string }) => {
-      console.log(`Room created with ID: ${roomId}`);
-      navigate(`/room/${roomId}`);
-    };
-
-    socket.on("room-created", handleRoomCreated);
-
-    return () => {
-      socket.off("room-created", handleRoomCreated);
-    };
-  }, [navigate, socket]);
+export function SocketProvider({ children }: { children: ReactNode }) {
+  const { socket, peer, userId } = useSocket();
 
   return (
-    <SocketContext.Provider value={{ socket, user }}>
+    <SocketContext.Provider value={{ socket, peer, userId }}>
       {children}
     </SocketContext.Provider>
   );
